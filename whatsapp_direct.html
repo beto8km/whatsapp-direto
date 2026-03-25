@@ -1,145 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WhatsApp Direto</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-<style>
-  .wa-wrap { padding: 1.5rem 0; max-width: 400px; margin: 0 auto; }
-  .wa-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.25rem; }
-  .wa-row { display: flex; gap: 10px; margin-bottom: 12px; }
-  .wa-field { display: flex; flex-direction: column; gap: 5px; }
-  .wa-field label { font-size: 12px; color: var(--color-text-secondary); }
-  .wa-field.ddd { width: 80px; }
-  .wa-field.num { flex: 1; }
-  .wa-input {
-    height: 44px;
-    padding: 0 12px;
-    border: 0.5px solid var(--color-border-secondary);
-    border-radius: var(--border-radius-md);
-    background: var(--color-background-primary);
-    color: var(--color-text-primary);
-    font-size: 18px;
-    font-family: var(--font-mono);
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    outline: none;
-    width: 100%;
-    box-sizing: border-box;
-    transition: border-color 0.15s;
-  }
-  .wa-input:focus { border-color: #FFC300; box-shadow: 0 0 0 2px rgba(255,195,0,0.18); }
-  .wa-input.ok { border-color: #22c55e; }
-  .wa-hint { font-size: 12px; color: var(--color-text-secondary); min-height: 16px; margin-bottom: 4px; }
-  .wa-hint.flash { color: #22c55e; }
-  .wa-btn {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    width: 100%; height: 48px;
-    background: #25D366;
-    color: #fff;
-    border: none;
-    border-radius: var(--border-radius-md);
-    font-size: 16px; font-weight: 500;
-    cursor: pointer;
-    margin-top: 4px;
-    transition: opacity 0.15s, transform 0.1s;
-  }
-  .wa-btn:hover { opacity: 0.9; }
-  .wa-btn:active { transform: scale(0.98); }
-  .wa-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-  .wa-icon { width: 20px; height: 20px; fill: #fff; }
-  .wa-preview { font-size: 13px; color: var(--color-text-secondary); text-align: center; margin-top: 10px; min-height: 18px; }
-</style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #111;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 1.5rem;
+    }
 
-<div class="wa-wrap">
-  <div class="wa-title">WhatsApp — envio direto</div>
+    .card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 400px;
+    }
 
-  <div class="wa-row">
-    <div class="wa-field ddd">
-      <label>DDD</label>
-      <input class="wa-input" id="ddd" type="tel" maxlength="2" placeholder="51" inputmode="numeric" />
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.75rem;
+    }
+
+    .logo svg {
+      width: 28px;
+      height: 28px;
+      fill: #25D366;
+    }
+
+    .logo-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.01em;
+    }
+
+    .logo-sub {
+      font-size: 12px;
+      color: #666;
+      margin-top: 1px;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field.ddd { width: 82px; }
+    .field.num { flex: 1; }
+
+    label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    input {
+      height: 48px;
+      padding: 0 14px;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 20px;
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      -webkit-appearance: none;
+    }
+
+    input::placeholder { color: #444; font-weight: 400; font-size: 16px; }
+    input:focus { border-color: #FFC300; box-shadow: 0 0 0 3px rgba(255,195,0,0.12); }
+    input.ok { border-color: #25D366; }
+
+    .hint {
+      font-size: 12px;
+      color: #25D366;
+      min-height: 18px;
+      margin-bottom: 6px;
+      padding-left: 2px;
+      transition: opacity 0.3s;
+    }
+
+    .hint.hidden { opacity: 0; }
+
+    .preview {
+      font-size: 13px;
+      color: #555;
+      text-align: center;
+      min-height: 18px;
+      margin-bottom: 14px;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.03em;
+    }
+
+    .preview.show { color: #888; }
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      height: 52px;
+      background: #25D366;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      letter-spacing: 0.01em;
+    }
+
+    button:hover:not(:disabled) { opacity: 0.88; }
+    button:active:not(:disabled) { transform: scale(0.98); }
+    button:disabled { opacity: 0.25; cursor: not-allowed; }
+
+    button svg { width: 20px; height: 20px; fill: #fff; flex-shrink: 0; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #222;
+      margin: 1.5rem 0 1.25rem;
+    }
+
+    .footer {
+      font-size: 11px;
+      color: #444;
+      text-align: center;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+
+    <div class="logo">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      <div>
+        <div class="logo-text">WhatsApp Direto</div>
+        <div class="logo-sub">Sem salvar contato</div>
+      </div>
     </div>
-    <div class="wa-field num">
-      <label>Número</label>
-      <input class="wa-input" id="num" type="tel" maxlength="9" placeholder="912345678" inputmode="numeric" />
+
+    <div class="row">
+      <div class="field ddd">
+        <label>DDD</label>
+        <input id="ddd" type="tel" maxlength="2" placeholder="51" inputmode="numeric" autocomplete="off" />
+      </div>
+      <div class="field num">
+        <label>Número</label>
+        <input id="num" type="tel" maxlength="9" placeholder="912345678" inputmode="numeric" autocomplete="off" />
+      </div>
     </div>
+
+    <div class="hint hidden" id="hint">DDD detectado automaticamente</div>
+
+    <div class="preview" id="preview"></div>
+
+    <button id="btn" disabled onclick="openWA()">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      Abrir conversa
+    </button>
+
+    <hr class="divider" />
+
+    <div class="footer">
+      Cole o número com ou sem DDD — o app ajusta automaticamente
+    </div>
+
   </div>
 
-  <div class="wa-hint" id="hint"></div>
+  <script>
+    const dddEl = document.getElementById('ddd');
+    const numEl = document.getElementById('num');
+    const btn   = document.getElementById('btn');
+    const hint  = document.getElementById('hint');
+    const prev  = document.getElementById('preview');
 
-  <button class="wa-btn" id="btn" disabled onclick="openWA()">
-    <svg class="wa-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-    </svg>
-    Abrir conversa
-  </button>
+    let hintTimer = null;
 
-  <div class="wa-preview" id="preview"></div>
-</div>
+    function onlyDigits(s) { return s.replace(/\D/g, ''); }
 
-<script>
-  const dddEl = document.getElementById('ddd');
-  const numEl = document.getElementById('num');
-  const btn = document.getElementById('btn');
-  const hint = document.getElementById('hint');
-  const preview = document.getElementById('preview');
-
-  function onlyDigits(s) { return s.replace(/\D/g, ''); }
-
-  function flashHint(msg) {
-    hint.textContent = msg;
-    hint.className = 'wa-hint flash';
-    setTimeout(() => { hint.textContent = ''; hint.className = 'wa-hint'; }, 2500);
-  }
-
-  function update() {
-    const d = dddEl.value.trim();
-    const n = numEl.value.trim();
-    const ok = d.length === 2 && n.length === 9;
-    btn.disabled = !ok;
-    if (ok) {
-      dddEl.className = 'wa-input ok';
-      numEl.className = 'wa-input ok';
-      preview.textContent = '+55 (' + d + ') ' + n.slice(0,5) + '-' + n.slice(5);
-    } else {
-      dddEl.className = 'wa-input';
-      numEl.className = 'wa-input';
-      preview.textContent = '';
+    function showHint(msg) {
+      hint.textContent = msg;
+      hint.className = 'hint';
+      clearTimeout(hintTimer);
+      hintTimer = setTimeout(() => { hint.className = 'hint hidden'; }, 2800);
     }
-  }
 
-  function handlePaste(e) {
-    e.preventDefault();
-    const raw = onlyDigits((e.clipboardData || window.clipboardData).getData('text'));
-    if (raw.length === 11) {
-      dddEl.value = raw.slice(0, 2);
-      numEl.value = raw.slice(2);
-      flashHint('DDD detectado automaticamente');
-      numEl.focus();
-    } else if (raw.length === 9) {
-      numEl.value = raw;
-      numEl.focus();
-    } else if (raw.length === 2) {
-      dddEl.value = raw;
-      numEl.focus();
-    } else {
-      const el = document.activeElement;
-      el.value = raw.slice(0, el === dddEl ? 2 : 9);
+    function update() {
+      const d = dddEl.value.trim();
+      const n = numEl.value.trim();
+      const ok = d.length === 2 && n.length === 9;
+      btn.disabled = !ok;
+      dddEl.className = (d.length === 2) ? 'ok' : '';
+      numEl.className = (n.length === 9) ? 'ok' : '';
+      if (ok) {
+        prev.textContent = '+55 (' + d + ') ' + n.slice(0,5) + '-' + n.slice(5);
+        prev.className = 'preview show';
+      } else {
+        prev.textContent = '';
+        prev.className = 'preview';
+      }
     }
-    update();
-  }
 
-  dddEl.addEventListener('paste', handlePaste);
-  numEl.addEventListener('paste', handlePaste);
+    function handlePaste(e) {
+      e.preventDefault();
+      const raw = onlyDigits((e.clipboardData || window.clipboardData).getData('text'));
+      if (raw.length === 11) {
+        dddEl.value = raw.slice(0, 2);
+        numEl.value = raw.slice(2);
+        showHint('DDD detectado automaticamente');
+        numEl.focus();
+      } else if (raw.length === 10) {
+        dddEl.value = raw.slice(0, 2);
+        numEl.value = raw.slice(2);
+        showHint('DDD detectado automaticamente');
+        numEl.focus();
+      } else if (raw.length === 9) {
+        numEl.value = raw;
+        numEl.focus();
+      } else if (raw.length === 2) {
+        dddEl.value = raw;
+        numEl.focus();
+      } else {
+        const el = document.activeElement;
+        el.value = raw.slice(0, el === dddEl ? 2 : 9);
+      }
+      update();
+    }
 
-  dddEl.addEventListener('input', () => {
-    dddEl.value = onlyDigits(dddEl.value).slice(0, 2);
-    if (dddEl.value.length === 2) numEl.focus();
-    update();
-  });
+    dddEl.addEventListener('paste', handlePaste);
+    numEl.addEventListener('paste', handlePaste);
 
-  numEl.addEventListener('input', () => {
-    numEl.value = onlyDigits(numEl.value).slice(0, 9);
-    update();
-  });
+    dddEl.addEventListener('input', () => {
+      dddEl.value = onlyDigits(dddEl.value).slice(0, 2);
+      if (dddEl.value.length === 2) numEl.focus();
+      update();
+    });
 
-  function openWA() {
-    const full = '55' + dddEl.value + numEl.value;
-    window.open('https://wa.me/' + full, '_blank');
-  }
-</script>
+    numEl.addEventListener('input', () => {
+      numEl.value = onlyDigits(numEl.value).slice(0, 9);
+      update();
+    });
+
+    function openWA() {
+      const full = '55' + dddEl.value + numEl.value;
+      window.open('https://wa.me/' + full, '_blank');
+    }
+  </script>
+</body>
+</html>
